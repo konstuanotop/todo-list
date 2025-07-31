@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/application/todo_app_colors.dart';
+import 'package:todo/application/app_colors.dart';
 
 class TaskForm extends StatefulWidget {
   const TaskForm({required this.onAddTodo, super.key});
@@ -82,7 +82,7 @@ class _TaskFormState extends State<TaskForm> {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: TodoAppColors.white,
+        color: AppColors.white,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -130,7 +130,7 @@ class _TaskFormState extends State<TaskForm> {
           const SizedBox(height: 35),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: TodoAppColors.palePurple,
+              backgroundColor: AppColors.palePurple,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusGeometry.circular(10),
               ),
@@ -143,7 +143,7 @@ class _TaskFormState extends State<TaskForm> {
                 child: Center(
                   child: Text(
                     'Создать задачу',
-                    style: TextStyle(color: TodoAppColors.white, fontSize: 16),
+                    style: TextStyle(color: AppColors.white, fontSize: 16),
                   ),
                 ),
               ),

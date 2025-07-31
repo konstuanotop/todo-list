@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class TodoAppColors {
+abstract class AppColors {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
   static const darkBlue = Color.fromARGB(255, 8, 73, 127);

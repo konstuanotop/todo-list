@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/application/todo_app_colors.dart';
+import 'package:todo/application/app_colors.dart';
 import 'package:todo/domain/model/todo.dart';
 
 class TaskItem extends StatelessWidget {
@@ -16,8 +16,8 @@ class TaskItem extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: todo.status.isProcces
-              ? TodoAppColors.palePurple
-              : TodoAppColors.darkGray,
+              ? AppColors.palePurple
+              : AppColors.darkGray,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -40,8 +40,8 @@ class TaskItem extends StatelessWidget {
                             : TextDecoration.lineThrough,
                         decorationThickness: 2,
                         color: todo.status.isProcces
-                            ? TodoAppColors.black
-                            : TodoAppColors.white,
+                            ? AppColors.black
+                            : AppColors.white,
                       ),
                       maxLines: 2,
                     ),
@@ -50,8 +50,8 @@ class TaskItem extends StatelessWidget {
                       DateFormat('dd.MM.yyyy').format(todo.date),
                       style: TextStyle(
                         color: todo.status.isProcces
-                            ? TodoAppColors.black
-                            : TodoAppColors.white,
+                            ? AppColors.black
+                            : AppColors.white,
                         decoration: todo.status.isProcces
                             ? TextDecoration.none
                             : TextDecoration.lineThrough,
@@ -65,7 +65,7 @@ class TaskItem extends StatelessWidget {
                 onPressed: onChangeStatus,
                 icon: todo.status.isProcces
                     ? const Icon(Icons.circle_outlined)
-                    : const Icon(Icons.check, color: TodoAppColors.white),
+                    : const Icon(Icons.check, color: AppColors.white),
               ),
             ],
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/application/todo_app_colors.dart';
+import 'package:todo/application/app_colors.dart';
 import 'package:todo/domain/model/task_status.dart';
 import 'package:todo/domain/model/todo.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
@@ -43,15 +43,15 @@ class _ToDoListPageState extends State<ToDoListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TodoAppColors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
           'My Tasks',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
         ),
-        backgroundColor: TodoAppColors.white,
-        shadowColor: TodoAppColors.black,
+        backgroundColor: AppColors.white,
+        shadowColor: AppColors.black,
         elevation: 4,
         scrolledUnderElevation: 4,
         actions: [
@@ -66,7 +66,7 @@ class _ToDoListPageState extends State<ToDoListPage> {
               );
             },
             icon: const Icon(Icons.add, size: 36),
-            color: TodoAppColors.darkBlue,
+            color: AppColors.darkBlue,
           ),
         ],
       ),
