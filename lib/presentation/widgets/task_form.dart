@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:todo/application/todo_app_colors.dart';
 
 class TaskForm extends StatefulWidget {
-  const TaskForm({super.key, required this.onAddTodo});
+  const TaskForm({required this.onAddTodo, super.key});
 
-  final Function(String, String) onAddTodo;
+  final void Function(String taskName, DateTime taskDate) onAddTodo;
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -15,7 +16,9 @@ class _TaskFormState extends State<TaskForm> {
   final TextEditingController _controllerDate = TextEditingController();
 
   DateTime? _selectedDate;
-  DateTime? _lastSelectedDate;
+
+  String? _errorTextTask;
+  String? _errorTextDate;
 
   @override
   void dispose() {
@@ -24,66 +27,62 @@ class _TaskFormState extends State<TaskForm> {
     super.dispose();
   }
 
-  bool _submitted = false;
+  void _validateText(String? text) {
+    final initialErrorText = _errorTextTask;
 
-  String? get _errorText {
-    final text = _controllerTask.text.trim();
-
-    if (text.isEmpty && _submitted) {
-      return 'Поле задачи пусто';
+    if (text == null || text.trim().isEmpty) {
+      _errorTextTask = 'Поле задачи пусто';
+    } else {
+      _errorTextTask = null;
     }
 
-    return null;
+    if (initialErrorText != _errorTextTask) setState(() {});
   }
 
-  String? get _errorDate {
-    final date = _controllerDate.text;
-
-    if (date.isEmpty) {
-      return 'Поле срока задачи пусто';
+  void _validateDate() {
+    if (_selectedDate == null) {
+      _errorTextDate = 'Поле срока задачи пусто';
+    } else {
+      _errorTextDate = null;
     }
-    return null;
+    setState(() {});
   }
 
   Future<void> _selectDate() async {
-    final DateTime? pickedDate = await showDatePicker(
+    final pickedDate = await showDatePicker(
       context: context,
-      initialDate: _lastSelectedDate ?? DateTime.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2200),
     );
 
-    DateFormat dateFormat = DateFormat("dd.MM.yyyy");
-
-    if (pickedDate != null && pickedDate != _lastSelectedDate) {
+    if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
-        _lastSelectedDate = pickedDate;
         _selectedDate = pickedDate;
-        _controllerDate.text = dateFormat.format(_selectedDate!);
+        _controllerDate.text = DateFormat('dd.MM.yyyy').format(_selectedDate!);
+
+        _validateDate();
       });
     }
   }
 
   void _submit() {
-    setState(() {
-      _submitted = true;
-    });
+    _validateText(_controllerTask.text);
+    _validateDate();
 
     if (_controllerTask.text.trim().isNotEmpty && _selectedDate != null) {
-      widget.onAddTodo(_controllerTask.text, _controllerDate.text);
+      widget.onAddTodo(_controllerTask.text, _selectedDate!);
       Navigator.pop(context);
-    } else {
-      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
+        color: TodoAppColors.white,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -91,36 +90,26 @@ class _TaskFormState extends State<TaskForm> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40),
-              Text(
+              const SizedBox(height: 40),
+              const Text(
                 'Введите название задачи:',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
               ),
               SizedBox(
                 height: 70,
-                child: TextFormField(
+                child: TextField(
                   controller: _controllerTask,
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     hintText: 'Название задачи',
-                    errorText: _errorText,
+                    errorText: _errorTextTask,
                     counterText: '',
                   ),
-                  validator: (text) {
-                    if (text == null || text.trim().isEmpty) {
-                      return 'Поле задач пусто';
-                    }
-                    return null;
-                  },
-                  onChanged: (text) {
-                    if (_submitted) {
-                      setState(() {});
-                    }
-                  },
+                  onChanged: _validateText,
                 ),
               ),
-              SizedBox(height: 5),
-              Text(
+              const SizedBox(height: 5),
+              const Text(
                 'Выберите срок выполнения задачи',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
               ),
@@ -129,7 +118,7 @@ class _TaskFormState extends State<TaskForm> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Крайний срок',
-                    errorText: _submitted ? _errorDate : null,
+                    errorText: _errorTextDate,
                   ),
                   controller: _controllerDate,
                   readOnly: true,
@@ -138,29 +127,29 @@ class _TaskFormState extends State<TaskForm> {
               ),
             ],
           ),
-          SizedBox(height: 35),
+          const SizedBox(height: 35),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 162, 149, 213),
+              backgroundColor: TodoAppColors.palePurple,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusGeometry.circular(10),
               ),
             ),
             onPressed: _submit,
-            child: Padding(
-              padding: const EdgeInsets.all(15),
+            child: const Padding(
+              padding: EdgeInsets.all(15),
               child: SizedBox(
                 width: double.infinity,
                 child: Center(
-                  child: const Text(
+                  child: Text(
                     'Создать задачу',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: TodoAppColors.white, fontSize: 16),
                   ),
                 ),
               ),
             ),
           ),
-          SizedBox(height: 35),
+          const SizedBox(height: 35),
         ],
       ),
     );

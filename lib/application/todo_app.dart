@@ -6,6 +6,6 @@ class ToDoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: ToDoListPage());
+    return const MaterialApp(home: ToDoListPage());
   }
 }

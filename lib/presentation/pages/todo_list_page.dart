@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo/application/todo_app_colors.dart';
 import 'package:todo/domain/model/task_status.dart';
 import 'package:todo/domain/model/todo.dart';
-import 'package:todo/presentation/widgets/task_item.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
+import 'package:todo/presentation/widgets/task_item.dart';
 
 class ToDoListPage extends StatefulWidget {
   const ToDoListPage({super.key});
@@ -14,7 +15,7 @@ class ToDoListPage extends StatefulWidget {
 class _ToDoListPageState extends State<ToDoListPage> {
   List<ToDo> todos = [];
 
-  void addTodo(String task, String date) {
+  void addTodo(String task, DateTime date) {
     final trimmedTask = task.trim();
 
     if (trimmedTask.isEmpty) return;
@@ -28,10 +29,10 @@ class _ToDoListPageState extends State<ToDoListPage> {
 
   void changeStatus(ToDo todo, int index) {
     final newTodo = todo.copyWith(
-      status: (switch (todo.status) {
+      status: switch (todo.status) {
         TaskStatus.process => TaskStatus.done,
         TaskStatus.done => TaskStatus.process,
-      }),
+      },
     );
 
     todos[index] = newTodo;
@@ -42,21 +43,21 @@ class _ToDoListPageState extends State<ToDoListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: TodoAppColors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'My Tasks',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
         ),
-        backgroundColor: Colors.white,
-        shadowColor: const Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: TodoAppColors.white,
+        shadowColor: TodoAppColors.black,
         elevation: 4,
         scrolledUnderElevation: 4,
         actions: [
           IconButton(
             onPressed: () {
-              showModalBottomSheet(
+              showModalBottomSheet<TaskForm>(
                 context: context,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.circular(10),
@@ -64,8 +65,8 @@ class _ToDoListPageState extends State<ToDoListPage> {
                 builder: (BuildContext context) => TaskForm(onAddTodo: addTodo),
               );
             },
-            icon: Icon(Icons.add, size: 36),
-            color: const Color.fromARGB(255, 8, 73, 127),
+            icon: const Icon(Icons.add, size: 36),
+            color: TodoAppColors.darkBlue,
           ),
         ],
       ),

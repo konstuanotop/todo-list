@@ -1,18 +1,13 @@
 import 'package:todo/domain/model/task_status.dart';
 
 class ToDo {
-  final String task;
-  final String date;
-  final TaskStatus status;
-
   const ToDo({required this.task, required this.date, required this.status});
 
-  @override
-  String toString() {
-    return 'ToDo(task: $task, date: $date, status: $status)';
-  }
+  final String task;
+  final DateTime date;
+  final TaskStatus status;
 
-  ToDo copyWith({String? task, String? date, TaskStatus? status}) {
+  ToDo copyWith({String? task, DateTime? date, TaskStatus? status}) {
     return ToDo(
       task: task ?? this.task,
       date: date ?? this.date,

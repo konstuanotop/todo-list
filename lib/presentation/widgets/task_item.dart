@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:todo/application/todo_app_colors.dart';
 import 'package:todo/domain/model/todo.dart';
 
 class TaskItem extends StatelessWidget {
-  const TaskItem({super.key, required this.todo, required this.onChangeStatus});
+  const TaskItem({required this.todo, required this.onChangeStatus, super.key});
 
   final ToDo todo;
   final VoidCallback onChangeStatus;
@@ -14,15 +16,14 @@ class TaskItem extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: todo.status.isProcces
-              ? const Color.fromARGB(255, 182, 174, 214)
-              : const Color.fromARGB(255, 101, 100, 105),
+              ? TodoAppColors.palePurple
+              : TodoAppColors.darkGray,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
@@ -39,18 +40,18 @@ class TaskItem extends StatelessWidget {
                             : TextDecoration.lineThrough,
                         decorationThickness: 2,
                         color: todo.status.isProcces
-                            ? Colors.black
-                            : const Color.fromARGB(255, 255, 255, 255),
+                            ? TodoAppColors.black
+                            : TodoAppColors.white,
                       ),
                       maxLines: 2,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
-                      todo.date,
+                      DateFormat('dd.MM.yyyy').format(todo.date),
                       style: TextStyle(
                         color: todo.status.isProcces
-                            ? Colors.black
-                            : Colors.white,
+                            ? TodoAppColors.black
+                            : TodoAppColors.white,
                         decoration: todo.status.isProcces
                             ? TextDecoration.none
                             : TextDecoration.lineThrough,
@@ -63,8 +64,8 @@ class TaskItem extends StatelessWidget {
               IconButton(
                 onPressed: onChangeStatus,
                 icon: todo.status.isProcces
-                    ? Icon(Icons.circle_outlined)
-                    : Icon(Icons.check, color: Colors.white),
+                    ? const Icon(Icons.circle_outlined)
+                    : const Icon(Icons.check, color: TodoAppColors.white),
               ),
             ],
           ),
