@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:todo/application/app_colors.dart';
+import 'package:todo/data/repository/todo_repository_impl.dart';
 import 'package:todo/domain/model/task_status.dart';
 import 'package:todo/domain/model/todo.dart';
+import 'package:todo/domain/repository/todo_repository.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
+import 'package:uuid/uuid.dart';
 
 class ToDoListPage extends StatefulWidget {
   const ToDoListPage({super.key});
@@ -13,21 +16,45 @@ class ToDoListPage extends StatefulWidget {
 }
 
 class _ToDoListPageState extends State<ToDoListPage> {
+  static const _uuid = Uuid();
+
+  final TodoRepository _repository = TodoRepositoryImpl();
   List<ToDo> todos = [];
 
-  void addTodo(String task, DateTime date) {
+  @override
+  void initState() {
+    super.initState();
+    _loadTodos();
+  }
+
+  Future<void> _loadTodos() async {
+    final todosList = await _repository.getAllTodos();
+
+    setState(() {
+      todos = todosList;
+    });
+  }
+
+  Future<void> addTodo(String task, DateTime date) async {
     final trimmedTask = task.trim();
 
     if (trimmedTask.isEmpty) return;
 
+    final newTodo = ToDo(
+      id: _uuid.v4(),
+      task: trimmedTask,
+      date: date,
+      status: TaskStatus.process,
+    );
+
+    await _repository.addTodo(newTodo);
+
     setState(() {
-      todos.add(
-        ToDo(task: trimmedTask, date: date, status: TaskStatus.process),
-      );
+      todos.add(newTodo);
     });
   }
 
-  void changeStatus(ToDo todo, int index) {
+  Future<void> changeStatus(ToDo todo, int index) async {
     final newTodo = todo.copyWith(
       status: switch (todo.status) {
         TaskStatus.process => TaskStatus.done,
@@ -35,9 +62,11 @@ class _ToDoListPageState extends State<ToDoListPage> {
       },
     );
 
-    todos[index] = newTodo;
+    await _repository.updateTodo(newTodo);
 
-    setState(() {});
+    setState(() {
+      todos[index] = newTodo;
+    });
   }
 
   @override
