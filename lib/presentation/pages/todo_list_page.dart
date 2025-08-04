@@ -28,7 +28,7 @@ class _ToDoListPageState extends State<ToDoListPage> {
   }
 
   Future<void> _loadTodos() async {
-    final todosList = await _repository.getAllTodos();
+    final todosList = await _repository.getAll();
 
     setState(() {
       todos = todosList;

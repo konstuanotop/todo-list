@@ -8,7 +8,7 @@ class TodoRepositoryImpl implements TodoRepository {
   static const _todosKey = 'todos';
 
   @override
-  Future<List<ToDo>> getAllTodos() async {
+  Future<List<ToDo>> getAll() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_todosKey);
 
@@ -21,39 +21,38 @@ class TodoRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<List<ToDo>> getTodoByTask(String task) async {
-    final todos = await getAllTodos();
+  Future<List<ToDo>> getTodoByTitle(String task) async {
+    final todos = await getAll();
     return todos.where((todo) => todo.task == task).toList();
   }
 
   @override
-  Future<void> saveTodos(List<ToDo> todos) async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonList = todos.map((todo) => todo.toJson()).toList();
-    await prefs.setString(_todosKey, json.encode(jsonList));
-  }
-
-  @override
   Future<void> addTodo(ToDo todo) async {
-    final todos = await getAllTodos();
+    final todos = await getAll();
     todos.add(todo);
-    await saveTodos(todos);
+    await _saveTodos(todos);
   }
 
   @override
   Future<void> updateTodo(ToDo updatedTodo) async {
-    final todos = await getAllTodos();
+    final todos = await getAll();
     final index = todos.indexWhere((todo) => todo.id == updatedTodo.id);
     if (index == -1) throw Exception('Задача не найдена');
 
     todos[index] = updatedTodo;
-    await saveTodos(todos);
+    await _saveTodos(todos);
   }
 
   @override
   Future<void> deleteTodo(String id) async {
-    final todos = await getAllTodos();
+    final todos = await getAll();
     todos.removeWhere((todo) => todo.id == id);
-    await saveTodos(todos);
+    await _saveTodos(todos);
+  }
+
+  Future<void> _saveTodos(List<ToDo> todos) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = todos.map((todo) => todo.toJson()).toList();
+    await prefs.setString(_todosKey, json.encode(jsonList));
   }
 }

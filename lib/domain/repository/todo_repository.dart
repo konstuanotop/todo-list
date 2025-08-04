@@ -1,13 +1,11 @@
 import 'package:todo/domain/model/todo.dart';
 
 abstract class TodoRepository {
-  Future<List<ToDo>> getTodoByTask(String task);
+  Future<List<ToDo>> getTodoByTitle(String task);
 
-  Future<List<ToDo>> getAllTodos();
+  Future<List<ToDo>> getAll();
 
   Future<void> addTodo(ToDo todo);
-
-  Future<void> saveTodos(List<ToDo> todos);
 
   Future<void> updateTodo(ToDo updatedTodo);
 
