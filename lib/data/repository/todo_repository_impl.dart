@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/data/dto/todo_dto.dart';
+import 'package:todo/data/mapper/todo_mapper.dart';
 import 'package:todo/domain/model/todo.dart';
 import 'package:todo/domain/repository/todo_repository.dart';
 
@@ -16,7 +18,9 @@ class TodoRepositoryImpl implements TodoRepository {
 
     final jsonList = json.decode(jsonString) as List<dynamic>;
     return jsonList
-        .map((json) => ToDo.fromJson(json as Map<String, dynamic>))
+        .map(
+          (json) => ToDoDto.fromJson(json as Map<String, dynamic>).toEntity(),
+        )
         .toList();
   }
 
@@ -52,7 +56,7 @@ class TodoRepositoryImpl implements TodoRepository {
 
   Future<void> _saveTodos(List<ToDo> todos) async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonList = todos.map((todo) => todo.toJson()).toList();
+    final jsonList = todos.map((todo) => todo.toDto().toJson()).toList();
     await prefs.setString(_todosKey, json.encode(jsonList));
   }
 }
