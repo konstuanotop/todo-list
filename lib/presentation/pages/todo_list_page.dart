@@ -1,72 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:todo/application/app_colors.dart';
-import 'package:todo/data/repository/todo_repository_impl.dart';
-import 'package:todo/domain/model/task_status.dart';
-import 'package:todo/domain/model/todo.dart';
-import 'package:todo/domain/repository/todo_repository.dart';
+import 'package:todo/presentation/controller/todos_controller.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
-import 'package:uuid/uuid.dart';
 
 class ToDoListPage extends StatefulWidget {
-  const ToDoListPage({super.key});
+  const ToDoListPage({required this.controller, super.key});
+
+  final TodosController controller;
 
   @override
   State<ToDoListPage> createState() => _ToDoListPageState();
 }
 
 class _ToDoListPageState extends State<ToDoListPage> {
-  static const _uuid = Uuid();
-
-  final TodoRepository _repository = TodoRepositoryImpl();
-  List<ToDo> todos = [];
+  late final TodosController _controller;
 
   @override
   void initState() {
     super.initState();
-    _loadTodos();
+    _controller = widget.controller;
+    _controller.loadTodos();
   }
 
-  Future<void> _loadTodos() async {
-    final todosList = await _repository.getAll();
-
-    setState(() {
-      todos = todosList;
-    });
-  }
-
-  Future<void> addTodo(String task, DateTime date) async {
-    final trimmedTask = task.trim();
-
-    if (trimmedTask.isEmpty) return;
-
-    final newTodo = ToDo(
-      id: _uuid.v4(),
-      task: trimmedTask,
-      date: date,
-      status: TaskStatus.process,
-    );
-
-    await _repository.addTodo(newTodo);
-
-    setState(() {
-      todos.add(newTodo);
-    });
-  }
-
-  Future<void> changeStatus(ToDo todo, int index) async {
-    final newTodo = todo.copyWith(
-      status: switch (todo.status) {
-        TaskStatus.process => TaskStatus.done,
-        TaskStatus.done => TaskStatus.process,
-      },
-    );
-
-    await _repository.updateTodo(newTodo);
-
-    setState(() {
-      todos[index] = newTodo;
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -91,7 +51,8 @@ class _ToDoListPageState extends State<ToDoListPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadiusGeometry.circular(10),
                 ),
-                builder: (BuildContext context) => TaskForm(onAddTodo: addTodo),
+                builder: (BuildContext context) =>
+                    TaskForm(onAddTodo: _controller.addTodo),
               );
             },
             icon: const Icon(Icons.add, size: 36),
@@ -99,13 +60,18 @@ class _ToDoListPageState extends State<ToDoListPage> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: todos.length,
-        itemBuilder: (context, index) {
-          final todo = todos[index];
-          return TaskItem(
-            todo: todo,
-            onChangeStatus: () => changeStatus(todo, index),
+      body: ListenableBuilder(
+        listenable: _controller,
+        builder: (context, _) {
+          return ListView.builder(
+            itemCount: _controller.todos.length,
+            itemBuilder: (context, index) {
+              final todo = _controller.todos[index];
+              return TaskItem(
+                todo: todo,
+                onChangeStatus: () => _controller.changeStatus(todo, index),
+              );
+            },
           );
         },
       ),
