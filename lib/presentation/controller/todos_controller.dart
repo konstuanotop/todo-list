@@ -8,11 +8,16 @@ class TodosController extends ChangeNotifier {
   TodosController({required TodoRepository repository})
     : _repository = repository;
 
-  static const _uuid = Uuid();
   final TodoRepository _repository;
-  List<ToDo> _todos = [];
 
+  static const _uuid = Uuid();
+
+  List<ToDo> _todos = [];
   List<ToDo> get todos => _todos;
+
+  int _findIndexById(String id) {
+    return _todos.indexWhere((todo) => todo.id == id);
+  }
 
   Future<void> loadTodos() async {
     final todosList = await _repository.getAll();
@@ -41,7 +46,7 @@ class TodosController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeStatus(ToDo todo, int index) async {
+  Future<void> changeStatus(ToDo todo) async {
     final newTodo = todo.copyWith(
       status: switch (todo.status) {
         TaskStatus.process => TaskStatus.done,
@@ -51,8 +56,38 @@ class TodosController extends ChangeNotifier {
 
     await _repository.updateTodo(newTodo);
 
-    _todos[index] = newTodo;
+    final index = _findIndexById(todo.id);
+    if (index != -1) {
+      _todos[index] = newTodo;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteTodo(String id) async {
+    await _repository.deleteTodo(id);
+
+    _todos.removeWhere((todo) => todo.id == id);
 
     notifyListeners();
+  }
+
+  Future<void> updateTodo(ToDo updatedTodo) async {
+    final index = _findIndexById(updatedTodo.id);
+    if (index == -1) {
+      throw Exception('Задача ${updatedTodo.task} не найдена');
+    }
+
+    await _repository.updateTodo(updatedTodo);
+
+    _todos[index] = updatedTodo;
+
+    notifyListeners();
+  }
+
+  List<ToDo> get sortedTodos {
+    final sortedByDate = List<ToDo>.from(_todos)
+      ..sort((a, b) => a.date.compareTo(b.date));
+    return sortedByDate
+      ..sort((a, b) => a.status.index.compareTo(b.status.index));
   }
 }

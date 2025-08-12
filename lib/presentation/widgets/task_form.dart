@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/application/app_colors.dart';
+import 'package:todo/domain/model/task_status.dart';
+import 'package:todo/domain/model/todo.dart';
 
 class TaskForm extends StatefulWidget {
-  const TaskForm({required this.onAddTodo, super.key});
+  const TaskForm({
+    this.onAddTodo,
+    this.onUpdateTodo,
+    this.id,
+    this.task,
+    this.date,
+    this.status,
+    super.key,
+  });
 
-  final void Function(String taskName, DateTime taskDate) onAddTodo;
+  final void Function(String taskName, DateTime taskDate)? onAddTodo;
+  final void Function(ToDo updatedTodo)? onUpdateTodo;
+
+  final String? id;
+  final String? task;
+  final DateTime? date;
+  final TaskStatus? status;
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -19,6 +35,16 @@ class _TaskFormState extends State<TaskForm> {
 
   String? _errorTextTask;
   String? _errorTextDate;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.date != null && widget.task != null) {
+      _controllerTask.text = widget.task!;
+      _selectedDate = widget.date;
+      _controllerDate.text = DateFormat('dd.MM.yyyy').format(_selectedDate!);
+    }
+  }
 
   @override
   void dispose() {
@@ -70,10 +96,21 @@ class _TaskFormState extends State<TaskForm> {
     _validateText(_controllerTask.text);
     _validateDate();
 
-    if (_controllerTask.text.trim().isNotEmpty && _selectedDate != null) {
-      widget.onAddTodo(_controllerTask.text, _selectedDate!);
-      Navigator.pop(context);
+    if (_controllerTask.text.trim().isEmpty || _selectedDate == null) return;
+
+    if (widget.onUpdateTodo != null && widget.id != null) {
+      final updatedTodo = ToDo(
+        id: widget.id!,
+        task: _controllerTask.text,
+        date: _selectedDate!,
+        status: widget.status!,
+      );
+      widget.onUpdateTodo?.call(updatedTodo);
+    } else {
+      widget.onAddTodo?.call(_controllerTask.text, _selectedDate!);
     }
+
+    Navigator.pop(context);
   }
 
   @override
@@ -136,14 +173,19 @@ class _TaskFormState extends State<TaskForm> {
               ),
             ),
             onPressed: _submit,
-            child: const Padding(
-              padding: EdgeInsets.all(15),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
               child: SizedBox(
                 width: double.infinity,
                 child: Center(
                   child: Text(
-                    'Создать задачу',
-                    style: TextStyle(color: AppColors.white, fontSize: 16),
+                    widget.onUpdateTodo != null
+                        ? 'Обновить задачу'
+                        : 'Создать задачу',
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),

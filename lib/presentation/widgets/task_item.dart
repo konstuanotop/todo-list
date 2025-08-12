@@ -12,7 +12,7 @@ class TaskItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: todo.status.isProcces
