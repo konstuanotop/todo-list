@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:todo/application/app_colors.dart';
-import 'package:todo/presentation/providers/todos_provider.dart';
+import 'package:todo/presentation/controller/todos_controller.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
 
 class ToDoListPage extends StatefulWidget {
-  const ToDoListPage({super.key});
+  const ToDoListPage({required this.controller, super.key});
+
+  final TodosController controller;
 
   @override
   State<ToDoListPage> createState() => _ToDoListPageState();
 }
 
 class _ToDoListPageState extends State<ToDoListPage> {
-  late final TodosController controller;
+  late final TodosController _controller;
 
   @override
   void initState() {
     super.initState();
-    controller = TodosController();
-    controller.loadTodos();
+    _controller = widget.controller;
+    _controller.loadTodos();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -50,7 +52,7 @@ class _ToDoListPageState extends State<ToDoListPage> {
                   borderRadius: BorderRadiusGeometry.circular(10),
                 ),
                 builder: (BuildContext context) =>
-                    TaskForm(onAddTodo: controller.addTodo),
+                    TaskForm(onAddTodo: _controller.addTodo),
               );
             },
             icon: const Icon(Icons.add, size: 36),
@@ -59,15 +61,15 @@ class _ToDoListPageState extends State<ToDoListPage> {
         ],
       ),
       body: ListenableBuilder(
-        listenable: controller,
+        listenable: _controller,
         builder: (context, _) {
           return ListView.builder(
-            itemCount: controller.todos.length,
+            itemCount: _controller.todos.length,
             itemBuilder: (context, index) {
-              final todo = controller.todos[index];
+              final todo = _controller.todos[index];
               return TaskItem(
                 todo: todo,
-                onChangeStatus: () => controller.changeStatus(todo, index),
+                onChangeStatus: () => _controller.changeStatus(todo, index),
               );
             },
           );

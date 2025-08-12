@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:todo/data/repository/todo_repository_impl.dart';
 import 'package:todo/domain/model/task_status.dart';
 import 'package:todo/domain/model/todo.dart';
 import 'package:todo/domain/repository/todo_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class TodosController extends ChangeNotifier {
+  TodosController({required TodoRepository repository})
+    : _repository = repository;
+
   static const _uuid = Uuid();
-  final TodoRepository _repository = TodoRepositoryImpl();
+  final TodoRepository _repository;
   List<ToDo> _todos = [];
 
   List<ToDo> get todos => _todos;
