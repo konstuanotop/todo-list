@@ -82,7 +82,11 @@ class _ToDoListPageState extends State<ToDoListPage> {
                         children: [
                           SlidableAction(
                             onPressed: (_) {
-                              _controller.deleteTodo(todo.id);
+                              _controller.deleteTodo(
+                                todo.id,
+                                todo.task,
+                                context,
+                              );
                             },
                             backgroundColor: AppColors.red,
                             foregroundColor: AppColors.white,

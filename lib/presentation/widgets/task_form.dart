@@ -93,24 +93,43 @@ class _TaskFormState extends State<TaskForm> {
   }
 
   void _submit() {
-    _validateText(_controllerTask.text);
-    _validateDate();
+    try {
+      _validateText(_controllerTask.text);
+      _validateDate();
 
-    if (_controllerTask.text.trim().isEmpty || _selectedDate == null) return;
+      if (_controllerTask.text.trim().isEmpty || _selectedDate == null) return;
 
-    if (widget.onUpdateTodo != null && widget.id != null) {
-      final updatedTodo = ToDo(
-        id: widget.id!,
-        task: _controllerTask.text,
-        date: _selectedDate!,
-        status: widget.status!,
+      if (widget.onUpdateTodo != null && widget.id != null) {
+        final updatedTodo = ToDo(
+          id: widget.id!,
+          task: _controllerTask.text,
+          date: _selectedDate!,
+          status: widget.status!,
+        );
+        widget.onUpdateTodo?.call(updatedTodo);
+      } else {
+        widget.onAddTodo?.call(_controllerTask.text, _selectedDate!);
+      }
+
+      Navigator.pop(context);
+    } on Exception catch (_) {
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Упс... произошла ошибка редактирования'),
+            actions: <Widget>[
+              Center(
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Ок'),
+                ),
+              ),
+            ],
+          );
+        },
       );
-      widget.onUpdateTodo?.call(updatedTodo);
-    } else {
-      widget.onAddTodo?.call(_controllerTask.text, _selectedDate!);
     }
-
-    Navigator.pop(context);
   }
 
   @override
