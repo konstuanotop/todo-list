@@ -102,9 +102,8 @@ class TodosController extends ChangeNotifier {
   }
 
   List<ToDo> get sortedTodos {
-    final sortedByDate = List<ToDo>.from(_todos)
-      ..sort((a, b) => a.date.compareTo(b.date));
-    return sortedByDate
+    return [..._todos]
+      ..sort((a, b) => a.date.compareTo(b.date))
       ..sort((a, b) => a.status.index.compareTo(b.status.index));
   }
 }
