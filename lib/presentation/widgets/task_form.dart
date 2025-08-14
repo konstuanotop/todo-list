@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/application/app_colors.dart';
@@ -15,8 +17,8 @@ class TaskForm extends StatefulWidget {
     super.key,
   });
 
-  final void Function(String taskName, DateTime taskDate)? onAddTodo;
-  final void Function(ToDo updatedTodo)? onUpdateTodo;
+  final Future<void> Function(String taskName, DateTime taskDate)? onAddTodo;
+  final Future<void> Function(ToDo updatedTodo)? onUpdateTodo;
 
   final String? id;
   final String? task;
@@ -92,7 +94,7 @@ class _TaskFormState extends State<TaskForm> {
     }
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     try {
       _validateText(_controllerTask.text);
       _validateDate();
@@ -106,28 +108,30 @@ class _TaskFormState extends State<TaskForm> {
           date: _selectedDate!,
           status: widget.status!,
         );
-        widget.onUpdateTodo?.call(updatedTodo);
+        await widget.onUpdateTodo?.call(updatedTodo);
       } else {
-        widget.onAddTodo?.call(_controllerTask.text, _selectedDate!);
+        await widget.onAddTodo?.call(_controllerTask.text, _selectedDate!);
       }
 
       Navigator.pop(context);
     } on Exception catch (_) {
-      showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Упс... произошла ошибка редактирования'),
-            actions: <Widget>[
-              Center(
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Ок'),
+      unawaited(
+        showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Упс... произошла ошибка редактирования'),
+              actions: <Widget>[
+                Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Ок'),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       );
     }
   }

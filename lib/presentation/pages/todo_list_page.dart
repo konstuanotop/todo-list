@@ -82,10 +82,31 @@ class _ToDoListPageState extends State<ToDoListPage> {
                         children: [
                           SlidableAction(
                             onPressed: (_) {
-                              _controller.deleteTodo(
-                                todo.id,
-                                todo.task,
-                                context,
+                              showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Удалить окончательно?'),
+                                    content: Text(todo.task),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          _controller.deleteTodo(
+                                            todo.id,
+                                            todo.task,
+                                          );
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: const Text('Да'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Нет'),
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
                             },
                             backgroundColor: AppColors.red,

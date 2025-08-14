@@ -61,38 +61,18 @@ class TodosController extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteTodo(String id, String task, BuildContext context) async {
-    final shouldDelete =
-        await showDialog<bool>(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Удалить окончательно?'),
-              content: Text(task),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Да'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Нет'),
-                ),
-              ],
-            );
-          },
-        ) ??
-        false;
-
-    if (shouldDelete) {
-      await _repository.deleteTodo(id);
-      _todos.removeWhere((todo) => todo.id == id);
-      notifyListeners();
-    }
+  Future<void> deleteTodo(String id, String task) async {
+    await _repository.deleteTodo(id);
+    _todos.removeWhere((todo) => todo.id == id);
+    notifyListeners();
   }
 
   Future<void> updateTodo(ToDo updatedTodo) async {
     final index = _findIndexById(updatedTodo.id);
+
+    if (index == -1) {
+      throw Exception('Задача ${updatedTodo.task} не найдена');
+    }
 
     await _repository.updateTodo(updatedTodo);
 
