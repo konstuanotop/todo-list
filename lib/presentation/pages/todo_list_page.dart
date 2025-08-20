@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:todo/application/theme/app_colors.dart';
 import 'package:todo/presentation/controller/todos_controller.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
@@ -33,17 +32,11 @@ class _ToDoListPageState extends State<ToDoListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
       appBar: AppBar(
-        centerTitle: true,
         title: Text(
           'My Tasks',
           style: Theme.of(context).textTheme.displayMedium,
         ),
-        backgroundColor: Theme.of(context).colorScheme.onSecondary,
-        shadowColor: AppColors.black,
-        elevation: 4,
-        scrolledUnderElevation: 4,
         actions: [
           IconButton(
             onPressed: () {
@@ -88,9 +81,6 @@ class _ToDoListPageState extends State<ToDoListPage> {
                                   return AlertDialog(
                                     title: const Text('Удалить окончательно?'),
                                     content: Text(todo.task),
-                                    backgroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.onSecondary,
                                     actions: [
                                       TextButton(
                                         onPressed: () {

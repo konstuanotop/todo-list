@@ -30,5 +30,14 @@ class AppTheme {
     datePickerTheme: const DatePickerThemeData(
       backgroundColor: AppColors.white,
     ),
+    dialogTheme: const DialogThemeData(backgroundColor: AppColors.white),
+    appBarTheme: const AppBarTheme(
+      centerTitle: true,
+      shadowColor: AppColors.black,
+      elevation: 4,
+      scrolledUnderElevation: 4,
+      backgroundColor: AppColors.white,
+    ),
+    scaffoldBackgroundColor: AppColors.white,
   );
 }
