@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:todo/application/app_colors.dart';
+import 'package:todo/application/theme/app_colors.dart';
 import 'package:todo/presentation/controller/todos_controller.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
 import 'package:todo/presentation/widgets/task_item.dart';
@@ -36,11 +36,11 @@ class _ToDoListPageState extends State<ToDoListPage> {
       backgroundColor: AppColors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'My Tasks',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+          style: Theme.of(context).textTheme.displayMedium,
         ),
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).colorScheme.onSecondary,
         shadowColor: AppColors.black,
         elevation: 4,
         scrolledUnderElevation: 4,
@@ -57,7 +57,7 @@ class _ToDoListPageState extends State<ToDoListPage> {
               );
             },
             icon: const Icon(Icons.add, size: 36),
-            color: AppColors.darkBlue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ],
       ),
@@ -88,6 +88,9 @@ class _ToDoListPageState extends State<ToDoListPage> {
                                   return AlertDialog(
                                     title: const Text('Удалить окончательно?'),
                                     content: Text(todo.task),
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.onSecondary,
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -109,8 +112,12 @@ class _ToDoListPageState extends State<ToDoListPage> {
                                 },
                               );
                             },
-                            backgroundColor: AppColors.red,
-                            foregroundColor: AppColors.white,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.tertiary,
+                            foregroundColor: Theme.of(
+                              context,
+                            ).colorScheme.onTertiary,
                             icon: Icons.delete,
                             label: 'Удалить',
                             borderRadius: const BorderRadius.only(
@@ -137,8 +144,12 @@ class _ToDoListPageState extends State<ToDoListPage> {
                                 ),
                               );
                             },
-                            backgroundColor: AppColors.darkBlue,
-                            foregroundColor: AppColors.white,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
+                            foregroundColor: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary,
                             icon: Icons.edit,
                             label: 'Изменить',
                             borderRadius: const BorderRadius.only(
