@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:todo/application/app_colors.dart';
 import 'package:todo/presentation/controller/todos_controller.dart';
 import 'package:todo/presentation/widgets/task_form.dart';
@@ -63,15 +64,100 @@ class _ToDoListPageState extends State<ToDoListPage> {
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
-          return ListView.builder(
-            itemCount: _controller.todos.length,
-            itemBuilder: (context, index) {
-              final todo = _controller.todos[index];
-              return TaskItem(
-                todo: todo,
-                onChangeStatus: () => _controller.changeStatus(todo, index),
-              );
-            },
+          return SlidableAutoCloseBehavior(
+            child: ListView.builder(
+              itemCount: _controller.todos.length,
+              itemBuilder: (context, index) {
+                final todo = _controller.sortedTodos[index];
+
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Slidable(
+                      key: ValueKey(todo.id),
+                      endActionPane: ActionPane(
+                        motion: const ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (_) {
+                              showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Удалить окончательно?'),
+                                    content: Text(todo.task),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          _controller.deleteTodo(
+                                            todo.id,
+                                            todo.task,
+                                          );
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: const Text('Да'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
+                                        child: const Text('Нет'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            backgroundColor: AppColors.red,
+                            foregroundColor: AppColors.white,
+                            icon: Icons.delete,
+                            label: 'Удалить',
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              bottomLeft: Radius.circular(10),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
+                          SlidableAction(
+                            onPressed: (_) {
+                              showModalBottomSheet<TaskForm>(
+                                context: context,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    10,
+                                  ),
+                                ),
+                                builder: (BuildContext context) => TaskForm(
+                                  onUpdateTodo: _controller.updateTodo,
+                                  id: todo.id,
+                                  task: todo.task,
+                                  date: todo.date,
+                                  status: todo.status,
+                                ),
+                              );
+                            },
+                            backgroundColor: AppColors.darkBlue,
+                            foregroundColor: AppColors.white,
+                            icon: Icons.edit,
+                            label: 'Изменить',
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
+                        ],
+                      ),
+                      child: TaskItem(
+                        todo: todo,
+                        onChangeStatus: () => _controller.changeStatus(todo),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           );
         },
       ),
