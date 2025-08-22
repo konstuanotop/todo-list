@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/application/app_colors.dart';
+import 'package:todo/application/theme/app_colors.dart';
 import 'package:todo/domain/model/task_status.dart';
 import 'package:todo/domain/model/todo.dart';
 
@@ -147,54 +147,54 @@ class _TaskFormState extends State<TaskForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
-              const Text(
-                'Введите название задачи:',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                height: 70,
-                child: TextField(
-                  controller: _controllerTask,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    hintText: 'Название задачи',
-                    errorText: _errorTextTask,
-                    counterText: '',
-                  ),
-                  onChanged: _validateText,
+          SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+                Text(
+                  'Введите название задачи:',
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-              ),
-              const SizedBox(height: 5),
-              const Text(
-                'Выберите срок выполнения задачи',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                height: 70,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Крайний срок',
-                    errorText: _errorTextDate,
+                SizedBox(
+                  height: 70,
+                  child: TextField(
+                    controller: _controllerTask,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      hintText: 'Название задачи',
+                      errorText: _errorTextTask,
+                      counterText: '',
+                    ),
+                    onChanged: _validateText,
                   ),
-                  controller: _controllerDate,
-                  readOnly: true,
-                  onTap: _selectDate,
                 ),
-              ),
-            ],
+                const SizedBox(height: 5),
+                Text(
+                  'Выберите срок выполнения задачи',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                SizedBox(
+                  height: 70,
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Крайний срок',
+                      errorText: _errorTextDate,
+                    ),
+                    controller: _controllerDate,
+                    readOnly: true,
+                    onTap: _selectDate,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 35),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.palePurple,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadiusGeometry.circular(10),
-              ),
-            ),
+            style: Theme.of(context).elevatedButtonTheme.style,
             onPressed: _submit,
             child: Padding(
               padding: const EdgeInsets.all(15),
@@ -205,10 +205,7 @@ class _TaskFormState extends State<TaskForm> {
                     widget.onUpdateTodo != null
                         ? 'Обновить задачу'
                         : 'Создать задачу',
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16,
-                    ),
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
                 ),
               ),
