@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/application/app_colors.dart';
 import 'package:todo/domain/model/todo.dart';
 
 class TaskItem extends StatelessWidget {
@@ -16,8 +15,8 @@ class TaskItem extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: todo.status.isProcces
-              ? AppColors.palePurple
-              : AppColors.darkGray,
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -32,26 +31,24 @@ class TaskItem extends StatelessWidget {
                   children: [
                     Text(
                       todo.task,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         decoration: todo.status.isProcces
                             ? TextDecoration.none
                             : TextDecoration.lineThrough,
                         decorationThickness: 2,
                         color: todo.status.isProcces
-                            ? AppColors.black
-                            : AppColors.white,
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context).colorScheme.onPrimary,
                       ),
                       maxLines: 2,
                     ),
                     const SizedBox(height: 8),
                     Text(
                       DateFormat('dd.MM.yyyy').format(todo.date),
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: todo.status.isProcces
-                            ? AppColors.black
-                            : AppColors.white,
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context).colorScheme.onPrimary,
                         decoration: todo.status.isProcces
                             ? TextDecoration.none
                             : TextDecoration.lineThrough,
@@ -65,7 +62,10 @@ class TaskItem extends StatelessWidget {
                 onPressed: onChangeStatus,
                 icon: todo.status.isProcces
                     ? const Icon(Icons.circle_outlined)
-                    : const Icon(Icons.check, color: AppColors.white),
+                    : Icon(
+                        Icons.check,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
               ),
             ],
           ),

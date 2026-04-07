@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/application/theme/app_theme.dart';
 import 'package:todo/data/repository/todo_repository_impl.dart';
 import 'package:todo/presentation/controller/todos_controller.dart';
 import 'package:todo/presentation/pages/todo_list_page.dart';
@@ -16,6 +17,7 @@ class _ToDoAppState extends State<ToDoApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: AppTheme.lightTheme,
       home: ToDoListPage(
         controller: controller,
       ),
